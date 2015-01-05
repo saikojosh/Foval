@@ -1,4 +1,4 @@
 Foval
 =====
 
-Wondrous form validation for Node.js.
+Wonderfully easy form validation for Node.js.

@@ -469,9 +469,9 @@ Foval.prototype.generateFieldHash = function () {
   var hash = {};
 
   // Add each field and value to the hash.
-  for (var i = 0, ilen = this.definitions.length ; i < ilen ; i++) {
-    var definition = this.definitions[i];
-    hash[definition.fieldName] = definition.value;
+  for (var fieldName in this.definitions) {
+    if (!this.definitions.hasOwnProperty(fieldName)) { continue; }
+    hash[fieldName] = this.definitions[fieldName].value;
   }
 
   return hash;

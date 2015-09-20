@@ -657,7 +657,7 @@ Foval.prototype.transforms = {
   'str-case': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', 'str-case', ['string'], definition);
+    var err = form.checkDataType('transform', 'str-case', ['string', 'email', 'url'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Ensure options is always a hash and not a single value.

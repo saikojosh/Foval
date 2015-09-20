@@ -359,7 +359,10 @@ Foval.prototype.validate = function (callback) {
   ], function (err, isFormValid, validationResults, fieldHash) {
 
     // A field is invalid.
-    if (err && err === 'stop') { return callback(null, false, validationResults, fieldHash); }
+    if (err && err === 'stop') {
+      if (!fieldHash) { fieldHash = form.generateFieldHash(); }
+      return callback(null, false, validationResults, fieldHash);
+    }
 
     // Other error.
     else if (err) { return callback(err); }

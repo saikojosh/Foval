@@ -7,7 +7,7 @@
     "url": "https://github.com/saikojosh/Foval/issues"
   },
   "name": "foval",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Wonderfully easy form validation for Node.js.",
   "keywords": [
     "form",

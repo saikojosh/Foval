@@ -981,6 +981,11 @@ Foval.prototype.validations = {
     var err = form.checkDataType('validation', 'email', ['email'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
+    // No value and not required.
+    if (!definition.value && !definition.required) {
+      return callback(null, true);
+    }
+
     var regexp = /^(([\w\d!#$%&'*+-\/=?^_`{|}~.]+)@((?:[\w\d\-]+)(?:\.[\w\d\-]+)+))$/i;
 
     // Not a valid email address (as best we can tell!)
@@ -1020,6 +1025,11 @@ Foval.prototype.validations = {
       throw new ErrorNinja('in-list-validation-invalid-list', {
         list: list
       });
+    }
+
+    // No value and not required.
+    if (!definition.value && !definition.required) {
+      return callback(null, true);
     }
 
     // Not in the list.
@@ -1063,6 +1073,11 @@ Foval.prototype.validations = {
       throw new ErrorNinja('match-field-validation-invalid-field', {
         matchField: options.matchField
       });
+    }
+
+    // No value and not required.
+    if (!definition.value && !definition.required) {
+      return callback(null, true);
     }
 
     var value1          = definition.value;
@@ -1165,6 +1180,11 @@ Foval.prototype.validations = {
       minScore: 0
     }, options);
 
+    // No value and not required.
+    if (!definition.value && !definition.required) {
+      return callback(null, true);
+    }
+
     // Test the password.
     var cs = new Countersign(options.requirements);
     cs.test(definition.value, options.minScore, function (err, success, result) {
@@ -1224,6 +1244,11 @@ Foval.prototype.validations = {
         test:  options.test,
         flags: options.flags
       });
+    }
+
+    // No value and not required.
+    if (!definition.value && !definition.required) {
+      return callback(null, true);
     }
 
     // Check validity.
@@ -1293,6 +1318,11 @@ Foval.prototype.validations = {
       max: null
     }, options);
 
+    // No value and not required.
+    if (!definition.value && !definition.required) {
+      return callback(null, true);
+    }
+
     // String too short.
     if (typeof options.min === 'number' && definition.value.length < options.min) {
       return callback(null, false, 'too-short');
@@ -1334,6 +1364,11 @@ Foval.prototype.validations = {
       minDigits: 1,
       maxDigits: null
     }, options);
+
+    // No value and not required.
+    if (!definition.value && !definition.required) {
+      return callback(null, true);
+    }
 
     var regexp    = /(?:\+(\d+)\.)?(\d+)/i;
     var match     = definition.value.match(regexp);
@@ -1387,6 +1422,11 @@ Foval.prototype.validations = {
     options = extender.defaults({
       requireProtocol: form.urlsRequireProtocol
     }, options);
+
+    // No value and not required.
+    if (!definition.value && !definition.required) {
+      return callback(null, true);
+    }
 
     var regexp = /(^|\s|>)((?:(https?):\/\/|(www\.))(?:([\w%]+):([\w%]+)@)?((?:[\w]+\.)?(?:[\w\-_]+){1}(?:\.[a-z]+)+\.*)(?::(\d+))?((?:\/[a-z0-9\-._~:\/?#\[\]%!$&'()*+,;=]+)?[^,\.;:?'"-]\/*))($|\s|<|,|\.|;|:|\?|'|"|-)/gi;
     var match  = definition.value.match(regexp);

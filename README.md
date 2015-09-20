@@ -59,7 +59,7 @@ form.defineFields({
   }
 });
 
-form.validate(function (err, isFormValid, validationResults, fieldHash); {
+form.validate(function (err, isFormValid, validationResults, fieldHash) {
 
   // A fatal error, not a validation error.
   if (err) { return ...  }
@@ -71,8 +71,7 @@ form.validate(function (err, isFormValid, validationResults, fieldHash); {
   }
 
   // Form is valid!
-  // Use 'fieldHash' to access the values.
-  console.log(fieldHash);
+  console.log(fieldHash);  //use 'fieldHash' to access the values.
 
 });
 ```
@@ -133,10 +132,10 @@ When defining fields you might want to enable some transforms or validations on 
 
 ### Transforms
 
-| Shortcut | Data Type | Default | Transformer | When   |
-|----------|-----------|---------|-------------|--------|
-| trim     | Boolean   | False   | str-trim    | Before |
-| modify   | Function  | Null    | custom      | Before |
+| Shortcut | Data Type | Default | Transform | When   |
+|----------|-----------|---------|-----------|--------|
+| trim     | Boolean   | False   | str-trim  | Before |
+| modify   | Function  | Null    | custom    | Before |
 
 ### Validations
 
@@ -145,11 +144,12 @@ When defining fields you might want to enable some transforms or validations on 
 | required | Boolean   | False   | required   |
 
 
-## Setting Up Transformers
-Transformers allow you to modify the data in the field both 'before' and 'after' it is validated. This is useful for example, if you need to trim whitespace from an email before validating it, and then want to run a custom transformer after validation, to split out the domain portion. When defining a field you must add transforms inside the 'transforms.before' or 'transforms.after' property. Transforms will be run in the order they are added.
+## Setting Up Transforms
+Transforms allow you to modify the data in the field both 'before' and 'after' it is validated. This is useful for example, if you need to trim whitespace from an email before validating it, and then want to run a custom transform after validation. Transforms will be run in the order they are added.
+When defining a field you must add transforms inside the 'transforms.before' or 'transforms.after' property. The 'before' transforms will be run before any validation is attempted, and the 'after' transforms will be run after successful validation.
 
 ### Use The Default Options
-If you just pass 'true' the transform will run with the default options. Please note some transforms have required options.
+If you just pass 'true' the transform will be run with the default options. Please note some transforms have required options.
 ```javascript
 {
   ...
@@ -165,7 +165,7 @@ If you just pass 'true' the transform will run with the default options. Please 
 ```
 
 ### Specifying Options
-You can pass an object containing various options for the transform. The 'run' option is 'true' by default.
+You can also pass an object containing various options to the transform. The 'run' option is 'true' by default, if you set it to 'false' you can prevent the transform from running.
 ```javascript
 {
   ...
@@ -188,7 +188,7 @@ You can pass an object containing various options for the transform. The 'run' o
 Validations allow you to test the field values against pre-defined rules. When defining a field you must add validations inside the 'validations' property. Validations will be run in the order they are added.
 
 ### Use The Default Options
-If you just pass 'true' the validation will run with the default options. Please note some validations have required options.
+If you just pass 'true' the validation will be run with the default options. Please note some validations have required options.
 ```javascript
 {
   ...
@@ -199,7 +199,7 @@ If you just pass 'true' the validation will run with the default options. Please
 ```
 
 ### Specifying Options
-You can pass an object containing various options for the validation. The 'run' option is 'true' by default.
+You can also pass an object containing various options to the validation. The 'run' option is 'true' by default, if you set it to 'false' you can prevent the validation from running without invalidating the field.
 ```javascript
 {
   ...
@@ -217,8 +217,8 @@ You can pass an object containing various options for the validation. The 'run' 
 }
 ```
 
-# Transformers List
-The following is a list of all the transformers and what they do. Remember, you can use these 'before' or 'after' the data is validated.
+# Transforms List
+The following is a list of all the transforms and what they do. Remember, you can use these 'before' or 'after' the data is validated.
 
 ## 'custom'
 Allows you to pass in an asynchronous function to do some transformation of the data.
@@ -308,7 +308,7 @@ Creates an MD5 hash of the value. Non-string values will be typecast to strings 
 ```
 
 ## 'str-br-to-line-break'
-Converts <br> tags to line breaks.
+Converts &lt;br&gt; tags to line breaks.
 
 ### Options
 
@@ -410,7 +410,7 @@ Collapse multiple spaces or tabs into single spaces.
 ```
 
 ## 'str-line-break-to-br'
-Converts line breaks tags to <br> tags.
+Converts line breaks tags to &lt;br&gt; tags.
 
 ### Options
 
@@ -572,7 +572,7 @@ Uses the Countersign module to test the strength of the password.
 | run          | Boolean   | True    | Set false to stop the transform running.                                             |
 | requirements | Object    | {}      | Pass in any of the [Countersign](https://www.npmjs.com/package/countersign) options. |
 
-## Default Requirements
+### Default Requirements
 See the [Countersign](https://www.npmjs.com/package/countersign) documentation for the options you can use.
 
 | Property  | Value |

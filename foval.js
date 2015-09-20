@@ -898,7 +898,7 @@ Foval.prototype.transforms = {
  * validate(form, definition, options, callback);
  * callback(err, isValid, reason);
  */
-Foval.prototype.validators = {
+Foval.prototype.validations = {
 
   /*
    * Perform a custom validation using the function passed in.

@@ -71,6 +71,7 @@ function Foval (data, options) {
   this.rawData                = data;
   this.definitions            = {};
   this.additionalValidationFn = null;
+  this.extraData              = {};
 
   // Check the Foval Client version.
   if (data.__FovalClientVersion && !semver.eq(data.__FovalClientVersion, this.version)) {
@@ -211,9 +212,10 @@ Foval.prototype.defineField = function (input) {
     validations: {}
   }, input, {
     // Uneditable properties.
-    rawValue: rawValue,
-    value:    null,
-    isValid:  null   //null = not checked.
+    rawValue:  rawValue,
+    value:     null,
+    isValid:   null,   //null = not checked.
+    extraData: {}
   });
 
   // Enable changing.
@@ -481,6 +483,62 @@ Foval.prototype.checkDataType = function (where, allowedDataTypes, dataType) {
 
   // Valid data type.
   return true;
+
+};
+
+/*
+ * Allows extra data to be attached to the form from outside the validator.
+ * If data with the same property name already exists it will be overwritten.
+ */
+Foval.prototype.attachFormData = function (propertyName, data) {
+
+  // Attach data.
+  this.extraData[propertyName] = data;
+
+  // Success!
+  return true;
+
+};
+
+/*
+ * Allows extra form data to be retrieved from outside the validator.
+ */
+Foval.prototype.getFormData = function (propertyName) {
+
+  // Get the data.
+  var data = this.extraData[propertyName];
+  return (typeof data !== 'undefined' ? data : null);
+  
+};
+
+/*
+ * Allows extra data to be attached to a field from outside the validator.
+ * If data with the same property name already exists it will be overwritten.
+ */
+Foval.prototype.attachFieldData = function (fieldName, propertyName, data) {
+
+  // Does the field exist?
+  if (typeof this.definitions[fieldName] === 'undefined') { return false; }
+
+  // Attach data.
+  this.definitions[fieldName].extraData[propertyName] = data;
+
+  // Success!
+  return true;
+
+};
+
+/*
+ * Allows extra field data to be retrieved from outside the validator.
+ */
+Foval.prototype.getFieldData = function (fieldName, propertyName) {
+
+  // Does the field exist?
+  if (typeof this.definitions[fieldName] === 'undefined') { return false; }
+
+  // Get the data.
+  var data = this.definitions[fieldName].extraData[propertyName];
+  return (typeof data !== 'undefined' ? data : null);
 
 };
 

@@ -9,7 +9,10 @@ var Countersign  = require('countersign');
 var escapeRegExp = require('escape-regexp');
 var extender     = require('object-extender');
 var parseBool    = require('parse-bool');
+var semver       = require('semver');
+var packageJSON  = require('./package.json');
 var ErrorNinja   = require('error-ninja').define({
+  'old-foval-client-version':             'The version of Foval Client you are using is out of date!',
   'duplicate-field':                      'You have tried to define more than one field with the same name.',
   'invalid-data-type':                    'The field type you entered is not valid!',
   'invalid-transform':                    'The transform you have specified is invalid.',
@@ -45,7 +48,8 @@ var validDataTypes = {
 };
 
 /*
- * Constructor.
+ * Constructor. Takes in the form data and a number of options before setting up
+ * the instance of Foval.
  */
 function Foval (data, options) {
 
@@ -63,9 +67,18 @@ function Foval (data, options) {
   this.urlsRequireProtocol    = options.urlsRequireProtocol;
 
   // Placeholder values.
+  this.version                = packageJSON.version;
   this.rawData                = data;
   this.definitions            = {};
   this.additionalValidationFn = null;
+
+  // Check the Foval Client version.
+  if (data.__FovalClientVersion && !semver.eq(data.__FovalClientVersion, this.version)) {
+    throw new ErrorNinja('old-foval-client-version', {
+      clientVersion: data.__FovalClientVersion,
+      moduleVersion: this.version
+    });
+  }
 
 };
 

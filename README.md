@@ -624,16 +624,115 @@ Allows you to pass in an asynchronous function to do some validation of the data
 ```
 
 ## 'email'
-...
+Checks to ensure we have a valid email address.
+
+### Options
+
+| Property | Data Type | Default | Notes                                     |
+|----------|-----------|---------|-------------------------------------------|
+| run      | Boolean   | True    | Set false to stop the validation running. |
+
+### Example
+```javascript
+{
+  ...
+  validations: {
+    'email': true
+  }
+}, {
+  ...
+  validations: {
+    'email': {
+      run: true
+    }
+  }
+}
+```
 
 ## 'in-list'
-...
+Checks to ensure we the field value is in the provided list (array). Most useful for strings but can be used for other data types.
+
+### Options
+
+| Property | Data Type | Default | Notes                                     |
+|----------|-----------|---------|-------------------------------------------|
+| run      | Boolean   | True    | Set false to stop the validation running. |
+| list     | Array     | Null    | An array of the values to test against.   |
+
+### Example
+```javascript
+{
+  ...
+  validations: {
+    'in-list': ['abc', 'def', 'ghi', 'jkl']
+  }
+}, {
+  ...
+  validations: {
+    'in-list': {
+      run:  true,
+      list: ['abc', 'def', 'ghi', 'jkl']
+    }
+  }
+}
+```
 
 ## 'match-field'
-...
+Checks to ensure the field matches against another field, by default we only test the value and not the type unless the 'strict' option is set. Most useful for strings but can be used for other data types.
+
+### Options
+
+| Property   | Data Type | Default | Notes                                                                       |
+|------------|-----------|---------|-----------------------------------------------------------------------------|
+| run        | Boolean   | True    | Set false to stop the validation running.                                   |
+| matchField | String    | Null    | The name of the other field we must match.                                  |
+| strict     | Boolean   | False   | Set true to use the === operator and also check the Foval dataType matches. |
+
+### Example
+```javascript
+{
+  ...
+  validations: {
+    'match-field': 'password'
+  }
+}, {
+  ...
+  validations: {
+    'match-field': {
+      run:        true,
+      matchField: 'password',
+      strict:     true
+    }
+  }
+}
+```
 
 ## 'numeric'
-...
+Runs various numeric validations on a field, depending on the options given.
+
+### Options
+
+| Property  | Data Type | Default | Notes                                       |
+|-----------|-----------|---------|---------------------------------------------|
+| run       | Boolean   | True    | Set false to stop the validation running.   |
+| min       | Float     | Null    | The minimum number allowed.                 |
+| max       | Float     | Null    | The maximum number allowed.                 |
+| allowZero | Float     | True    | Set false to disallow '0' as a valid value. |
+
+### Example
+```javascript
+{
+  ...
+  validations: {
+    'numeric': {
+      run:       true,
+      min:       -10,
+      max:       10,
+      allowZero: false
+    }
+  }
+}
+```
 
 ## 'password'
 Uses the [Countersign](https://www.npmjs.com/package/countersign) module to test the strength of the password.
@@ -642,7 +741,7 @@ Uses the [Countersign](https://www.npmjs.com/package/countersign) module to test
 
 | Property     | Data Type | Default | Notes                                                                                |
 |--------------|-----------|---------|--------------------------------------------------------------------------------------|
-| run          | Boolean   | True    | Set false to stop the transform running.                                             |
+| run          | Boolean   | True    | Set false to stop the validation running.                                            |
 | requirements | Object    | {}      | Pass in any of the [Countersign](https://www.npmjs.com/package/countersign) options. |
 
 ### Default Requirements
@@ -679,13 +778,93 @@ See the [Countersign](https://www.npmjs.com/package/countersign) documentation f
 ```
 
 ## 'regexp'
-...
+Allows you to test the value of a field against a regular expression.
+
+### Options
+
+| Property | Data Type     | Default | Notes                                                             |
+|----------|---------------|---------|-------------------------------------------------------------------|
+| run      | Boolean       | True    | Set false to stop the validation running.                         |
+| test     | RegExp/String | Null    | A regular expression object or a string.                          |
+| flags    | String        | Null    | Allows you to set flags if 'test' is a string regular expression. |
+
+### Example
+```javascript
+{
+  ...
+  validations: {
+    'regexp': /[a-z0-9]+/gi
+  }
+}, {
+  ...
+  validations: {
+    'regexp': {
+      run:  true,
+      test: /[a-z0-9]+/gi
+    }
+  }
+}, {
+  ...
+  validations: {
+    'regexp': {
+      run:   true,
+      test:  '[a-z]{0,' + qty + '}[0-9]+',
+      flags: 'gi'
+    }
+  }
+}
+```
 
 ## 'required'
-...
+Used on fields that are required and tests to see if the field is actually populated. Returns a validation error if there is no value in the field, or the value isn't enough for the field to be considered populated. For example a required checkbox field needs a truthy value to be considered populated, a false value isn't enough and will fail this validation.
+
+### Options
+
+| Property | Data Type | Default | Notes                                     |
+|----------|-----------|---------|-------------------------------------------|
+| run      | Boolean   | True    | Set false to stop the validation running. |
+
+### Example
+```javascript
+{
+  ...
+  validations: {
+    'required': true
+  }
+}, {
+  ...
+  validations: {
+    'required': {
+      run: true
+    }
+  }
+}
+```
 
 ## 'str-length'
-...
+Make sure the length of a string falls within a specific range.
+
+### Options
+
+| Property | Data Type | Default | Notes                                     |
+|----------|-----------|---------|-------------------------------------------|
+| run      | Boolean   | True    | Set false to stop the validation running. |
+| min      | Int       | Null    | The minimum number of characters allowed. |
+| max      | Int       | Null    | The maximum number of characters allowed. |
+
+### Example
+```javascript
+{
+  ...
+  validations: {
+    'str-length': {
+      run: true,
+      min: 100,
+      max: 300
+    }
+  }
+}
+```
 
 ## 'telephone'
 Checks to ensure we have a valid telephone number. The validation will only pass if the telephone number is a string in one of these formats:
@@ -697,7 +876,7 @@ Checks to ensure we have a valid telephone number. The validation will only pass
 
 | Property  | Data Type | Default | Notes                                                                             |
 |-----------|-----------|---------|-----------------------------------------------------------------------------------|
-| run       | Boolean   | True    | Set false to stop the transform running.                                          |
+| run       | Boolean   | True    | Set false to stop the validation running.                                         |
 | minDigits | Int       | 1       | The minimum number of digits in the phone number, not including the country code. |
 | maxDigits | Int       | Null    | The maximum number of digits in the phone number, not including the country code. |
 
@@ -727,7 +906,7 @@ Checks to ensure we have a valid URL.
 
 | Property        | Data Type | Default | Notes                                                         |
 |-----------------|-----------|---------|---------------------------------------------------------------|
-| run             | Boolean   | True    | Set false to stop the transform running.                      |
+| run             | Boolean   | True    | Set false to stop the validation running.                     |
 | requireProtocol | Boolean   | True    | Set false to validate URLs that don't have a HTTP/S protocol. |
 
 ### Example

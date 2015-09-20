@@ -127,17 +127,18 @@ Foval.prototype.defineField = function (input) {
   }
 
   // Do we need to typecast the value?
-  var rawValue = this.rawData[input.fieldName];
+  var rawValue   = this.rawData[input.fieldName];
+  var startValue = this.rawData[input.fieldName];
   if (input.typecasting !== false) {
     switch (normalisedDataType) {
       case 'string':
       case 'email':
       case 'telephone':
-                      rawValue = String(rawValue);       break;
-      case 'int':     rawValue = parseInt(rawValue, 10); break;
-      case 'float':   rawValue = parseFloat(rawValue);   break;
-      case 'boolean': rawValue = parseBool(rawValue);    break;
-      case 'checkbox':     break; ///?????
+                       startValue = String(startValue);       break;
+      case 'int':      startValue = parseInt(startValue, 10); break;
+      case 'float':    startValue = parseFloat(startValue);   break;
+      case 'boolean':  startValue = parseBool(startValue);    break;
+      case 'checkbox': startValue = parseBool(startValue);    break;
     }
   }
 
@@ -199,12 +200,12 @@ Foval.prototype.defineField = function (input) {
   // Save the definition.
   this.definitions[input.fieldName] = extender.merge({
     // Overwritable properties.
-    fieldName:    null,
-    dataType:     null,
-    defaultValue: null,
-    required:     null,
-    trim:         null,
-    modify:       null,
+    fieldName: null,
+    dataType:  null,
+    value:     startValue,  //setting this when defining a field acts as a default value.
+    required:  null,
+    trim:      null,
+    modify:    null,
     transforms:  {
       before: {},
       after:  {}
@@ -213,7 +214,6 @@ Foval.prototype.defineField = function (input) {
   }, input, {
     // Uneditable properties.
     rawValue:  rawValue,
-    value:     null,
     isValid:   null,   //null = not checked.
     extraData: {}
   });
@@ -508,7 +508,7 @@ Foval.prototype.getFormData = function (propertyName) {
   // Get the data.
   var data = this.extraData[propertyName];
   return (typeof data !== 'undefined' ? data : null);
-  
+
 };
 
 /*

@@ -585,11 +585,12 @@ Allows you to pass in an asynchronous function to do some validation of the data
 
 ### Function Parameters
 
-| Parameter | Data Type | Notes                                                 |
-|-----------|-----------|-------------------------------------------------------|
-| value     | Mixed     | The value of the field.                               |
-| dataType  | String    | The Foval data type of the field.                     |
-| finish    | Function  | The callback to call when your function has finished. |
+| Parameter  | Data Type | Notes                                                 |
+|------------|-----------|-------------------------------------------------------|
+| value      | Mixed     | The value of the field.                               |
+| dataType   | String    | The Foval data type of the field.                     |
+| isRequired | Boolean   | Whether the field is required, as per the definition. |
+| finish     | Function  | The callback to call when your function has finished. |
 
 ### Finish Parameters
 
@@ -604,7 +605,7 @@ Allows you to pass in an asynchronous function to do some validation of the data
 {
   ...
   validations: {
-    'custom': function (value, dataType, finish) {
+    'custom': function (value, dataType, isRequired, finish) {
       ...
       return finish(null, isValid, reason);
     }
@@ -614,7 +615,7 @@ Allows you to pass in an asynchronous function to do some validation of the data
   validations: {
     'custom': {
       run: true,
-      fn:  function (value, dataType, finish) {
+      fn:  function (value, dataType, isRequired, finish) {
         ...
         return finish(null, isValid, reason);
       }

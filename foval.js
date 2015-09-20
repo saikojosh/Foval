@@ -933,7 +933,7 @@ Foval.prototype.validations = {
 
   /*
    * Perform a custom validation using the function passed in.
-   * custom(value, dataType, finish);
+   * custom(value, dataType, isRequired, finish);
    * finish(err, isValid, reason);
    * [options]
    *  run (bool>true) Set false to prevent it from running.
@@ -961,7 +961,7 @@ Foval.prototype.validations = {
     }
 
     // Run the custom validation function.
-    options.fn(definition.value, definition.dataType, function (err, isValid, reason) {
+    options.fn(definition.value, definition.dataType, definition.required, function (err, isValid, reason) {
       if (err) { return callback(err); }
       return callback(null, isValid, reason);
     });

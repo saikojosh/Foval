@@ -935,7 +935,7 @@ Foval.prototype.validators = {
    * [options]
    *  run        (bool>true)  Set false to prevent it from running.
    *  matchField (string)     The name of the other field we must match.
-   *  strict     (bool>false) Set true to do a string test (including typeof and dataType).
+   *  strict     (bool>false) Set true to perform a strict test (including typeof and dataType).
    * [reasons]
    *  'no-match'    The fields don't match at all.
    *  'loose-match' The fields match loosely, but don't satisfy the 'strict' option.

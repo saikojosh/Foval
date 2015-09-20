@@ -1,7 +1,4 @@
 {
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/saikojosh/Foval.git"
@@ -10,7 +7,7 @@
     "url": "https://github.com/saikojosh/Foval/issues"
   },
   "name": "foval",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Wonderfully easy form validation for Node.js.",
   "keywords": [
     "form",
@@ -28,10 +25,12 @@
     }
   ],
   "dependencies": {
-    "async": "0.9.x",
+    "async": "1.4.x",
     "countersign": "0.1.x",
-    "escape-regexp": "0.0.1",
-    "object-assign": "2.0.x"
+    "error-ninja": "0.0.x",
+    "escape-regexp": "0.0.x",
+    "object-extender": "1.2.x",
+    "parse-bool": "0.0.x"
   },
   "license": "MIT"
 }

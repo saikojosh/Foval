@@ -365,7 +365,6 @@ Foval.prototype.runTransforms = function (definition, type, callback) {
   var transforms = definition.transforms[type];
   var arrKeys    = Object.keys(transforms);
   var value      = definition.value;
-  var dataType   = definition.dataType;
 
   // Cycle each transform.
   async.eachSeries(arrKeys, function (key, next) {
@@ -377,7 +376,7 @@ Foval.prototype.runTransforms = function (definition, type, callback) {
     if (typeof options === 'object' && options.run === false) { return next(null); }
 
     // Do the transform.
-    form.transforms[key](value, dataType, options, function (err, transformedValue) {
+    form.transforms[key](form, definition, options, function (err, transformedValue) {
 
       if (err) { return next(err); }
 
@@ -544,7 +543,7 @@ Foval.prototype.getFieldData = function (fieldName, propertyName) {
 
 /*
  * Contains various transformer functions.
- * transform(value, dataType, options, callback);
+ * transform(form, definition, options, callback);
  * callback(err, transformedValue);
  */
 Foval.prototype.transforms = {
@@ -559,7 +558,7 @@ Foval.prototype.transforms = {
    * [reason]
    *  The custom function can pass back its own reason string.
    */
-  'custom': function (value, dataType, options, callback) {
+  'custom': function (form, definition, options, callback) {
 
     // Ensure options is always a hash and not a single value.
     if (typeof options !== 'object' || options.constructor.name !== 'Object') {
@@ -579,7 +578,7 @@ Foval.prototype.transforms = {
     }
 
     // Run the custom transform function.
-    options.fn(value, dataType, function (err, transformedValue) {
+    options.fn(definition.value, definition.dataType, function (err, transformedValue) {
       if (err) { return callback(err); }
       return callback(null, transformedValue);
     });
@@ -595,7 +594,7 @@ Foval.prototype.transforms = {
    *  seed     (mixed)      Any value to use as a seed, optional.
    *  random   (bool>false) Set true to add a random value to seed the hash with.
    */
-  'md5': function (value, dataType, options, callback) {
+  'md5': function (form, definition, options, callback) {
 
     // Ensure options is always a hash and not a single value.
     if (typeof options !== 'object' || options.constructor.name !== 'Object') {
@@ -612,7 +611,7 @@ Foval.prototype.transforms = {
     }, options);
 
     // Prepare the value.
-    value = String(value);
+    var value = String(definition.value);
     if (options.seed)   { value += options.seed;               }
     if (options.random) { value += Math.random() + Date.now(); }
 
@@ -633,14 +632,14 @@ Foval.prototype.transforms = {
    * [options]
    *  run (bool>true) Set false to prevent it from running.
    */
-  'str-br-to-line-break': function (value, dataType, options, callback) {
+  'str-br-to-line-break': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string'], dataType);
+    var err = form.checkDataType('transform', ['string'], definition.dataType);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Do the transform.
-    value = value.replace(/<br>/gi, '\n');
+    var value = definition.value.replace(/<br>/gi, '\n');
 
     // Continue.
     return callback(null, value);
@@ -653,10 +652,10 @@ Foval.prototype.transforms = {
    *  run  (bool>true) Set false to prevent it from running.
    *  case (string)    The new string case to apply.
    */
-  'str-case': function (value, dataType, options, callback) {
+  'str-case': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string'], dataType);
+    var err = form.checkDataType('transform', ['string'], definition.dataType);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Ensure options is always a hash and not a single value.
@@ -672,12 +671,13 @@ Foval.prototype.transforms = {
     }, options);
 
     // Do the transform.
+    var value;
     switch (options.case) {
-      case 'lower': value = value.toLowerCase(); break;
-      case 'upper': value = value.toUpperCase(); break;
+      case 'lower': value = definition.value.toLowerCase(); break;
+      case 'upper': value = definition.value.toUpperCase(); break;
       case 'capitalise':
       case 'capitalize':
-        value = value.toLowerCase().replace(/(?:^|\s)\S/g, function(a) {
+        value = definition.value.toLowerCase().replace(/(?:^|\s)\S/g, function(a) {
           return a.toUpperCase();
         });
         break;
@@ -699,14 +699,14 @@ Foval.prototype.transforms = {
    * [options]
    *  run (bool>true) Set false to prevent it from running.
    */
-  'str-collapse-whitespace': function (value, dataType, options, callback) {
+  'str-collapse-whitespace': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string'], dataType);
+    var err = form.checkDataType('transform', ['string'], definition.dataType);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Do the transform.
-    value = value.replace(/\s+/gi, ' ');
+    var value = definition.value.replace(/\s+/gi, ' ');
 
     // Continue.
     return callback(null, value);
@@ -718,14 +718,14 @@ Foval.prototype.transforms = {
    * [options]
    *  run (bool>true) Set false to prevent it from running.
    */
-  'str-line-break-to-br': function (value, dataType, options, callback) {
+  'str-line-break-to-br': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string'], dataType);
+    var err = form.checkDataType('transform', ['string'], definition.dataType);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Do the transform.
-    value = value.replace(/\n/gi, '<br>');
+    var value = definition.value.replace(/\n/gi, '<br>');
 
     // Continue.
     return callback(null, value);
@@ -740,10 +740,10 @@ Foval.prototype.transforms = {
    *  flags   (string)        If a string was passed in we can also specify the flags for the regexp.
    *  replace (string)        The value we should replace with.
    */
-  'str-replace': function (value, dataType, options, callback) {
+  'str-replace': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string', 'email', 'telephone', 'url'], dataType);
+    var err = form.checkDataType('transform', ['string', 'email', 'telephone', 'url'], definition.dataType);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Default options.
@@ -770,7 +770,7 @@ Foval.prototype.transforms = {
     }
 
     // Do the transform.
-    value = value.replace(regexp, options.replace);
+    var value = definition.value.replace(regexp, options.replace);
 
     // Continue.
     return callback(null, value);
@@ -782,14 +782,14 @@ Foval.prototype.transforms = {
    * [options]
    *  run (bool>true) Set false to prevent it from running.
    */
-  'str-trim': function (value, dataType, options, callback) {
+  'str-trim': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string', 'email', 'telephone', 'url'], dataType);
+    var err = form.checkDataType('transform', ['string', 'email', 'telephone', 'url'], definition.dataType);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Do the transform.
-    value = value.trim();
+    var value = definition.value.trim();
 
     // Continue.
     return callback(null, value);
@@ -804,10 +804,10 @@ Foval.prototype.transforms = {
    *  international (bool>null)    Set true to use international format or false to use local, otherwise we use the existing format.
    *  countryCode   (string)       Must be provided if formatting local numbers as international.
    */
-  'telephone': function (value, dataType, options, callback) {
+  'telephone': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string', 'email', 'telephone', 'url'], dataType);
+    var err = form.checkDataType('transform', ['string', 'email', 'telephone', 'url'], definition.dataType);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Ensure options is always a hash and not a single value.
@@ -825,7 +825,8 @@ Foval.prototype.transforms = {
       countryCode:   null
     }, options);
 
-    var valMatch            = value.match(/(?:(\+\d+)\.)?(\d+)/);
+    var value            = definition.value;
+    var valMatch         = value.match(/(?:(\+\d+)\.)?(\d+)/);
     var isInternational  = Boolean(valMatch && valMatch[1]);
     var useInternational = (options.international === null ? isInternational : options.international);
     var countryCode      = (isInternational ? valMatch[1] : options.countryCode);

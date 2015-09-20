@@ -285,6 +285,7 @@ Foval.prototype.validate = function (callback) {
 
             // Store the validation result.
             validationResults[definition.fieldName] = result;
+            definition.isValid = isFieldValid;
             if (!isFieldValid) { isFormValid = false; }
 
             // By default, we stop when we encounter the first invalid value.

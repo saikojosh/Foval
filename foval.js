@@ -470,13 +470,15 @@ Foval.prototype.generateFieldHash = function () {
 /*
  * Returns an ErrorNinja if the given data type is not allowed, otherwise null.
  */
-Foval.prototype.checkDataType = function (where, allowedDataTypes, dataType) {
+Foval.prototype.checkDataType = function (where, which, allowedDataTypes, definition) {
 
   // Invalid data type.
-  if (allowedDataTypes.indexOf(dataType) === -1) {
+  if (allowedDataTypes.indexOf(definition.dataType) === -1) {
     return new ErrorNinja(where + '-wrong-data-type', {
-      dataType: dataType,
-      allowed:  allowedDataTypes
+      fieldName: definition.fieldName,
+      which:     which,
+      dataType:  definition.dataType,
+      allowed:   allowedDataTypes
     });
   }
 
@@ -635,7 +637,7 @@ Foval.prototype.transforms = {
   'str-br-to-line-break': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string'], definition.dataType);
+    var err = form.checkDataType('transform', 'str-br-to-line-break', ['string'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Do the transform.
@@ -655,7 +657,7 @@ Foval.prototype.transforms = {
   'str-case': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string'], definition.dataType);
+    var err = form.checkDataType('transform', 'str-case', ['string'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Ensure options is always a hash and not a single value.
@@ -702,7 +704,7 @@ Foval.prototype.transforms = {
   'str-collapse-whitespace': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string'], definition.dataType);
+    var err = form.checkDataType('transform', 'str-collapse-whitespace', ['string'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Do the transform.
@@ -721,7 +723,7 @@ Foval.prototype.transforms = {
   'str-line-break-to-br': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string'], definition.dataType);
+    var err = form.checkDataType('transform', 'str-line-break-to-br', ['string'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Do the transform.
@@ -743,7 +745,7 @@ Foval.prototype.transforms = {
   'str-replace': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string', 'email', 'telephone', 'url'], definition.dataType);
+    var err = form.checkDataType('transform', 'str-replace', ['string', 'email', 'telephone', 'url'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Default options.
@@ -785,7 +787,7 @@ Foval.prototype.transforms = {
   'str-trim': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string', 'email', 'telephone', 'url'], definition.dataType);
+    var err = form.checkDataType('transform', 'str-trim', ['string', 'email', 'telephone', 'url'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Do the transform.
@@ -807,7 +809,7 @@ Foval.prototype.transforms = {
   'telephone': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', ['string', 'email', 'telephone', 'url'], definition.dataType);
+    var err = form.checkDataType('transform', 'telephone', ['string', 'email', 'telephone', 'url'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Ensure options is always a hash and not a single value.
@@ -948,7 +950,7 @@ Foval.prototype.validations = {
   'email': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('validation', ['email'], definition.dataType);
+    var err = form.checkDataType('validation', 'email', ['email'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     var regexp = /^(([\w\d!#$%&'*+-\/=?^_`{|}~.]+)@((?:[\w\d\-]+)(?:\.[\w\d\-]+)+))$/i;
@@ -1076,7 +1078,7 @@ Foval.prototype.validations = {
   'numeric': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('validation', ['int', 'float'], definition.dataType);
+    var err = form.checkDataType('validation', 'numeric', ['int', 'float'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Ensure options is always a hash and not a single value.
@@ -1118,7 +1120,7 @@ Foval.prototype.validations = {
   'password': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('validation', ['password'], definition.dataType);
+    var err = form.checkDataType('validation', 'password', ['password'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Ensure options is always a hash and not a single value.
@@ -1164,7 +1166,7 @@ Foval.prototype.validations = {
   'regexp': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('validation', ['string', 'email', 'telephone', 'url'], definition.dataType);
+    var err = form.checkDataType('validation', 'regexp', ['string', 'email', 'telephone', 'url'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Ensure options is always a hash and not a single value.
@@ -1254,7 +1256,7 @@ Foval.prototype.validations = {
   'str-length': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('validation', ['string', 'email'], definition.dataType);
+    var err = form.checkDataType('validation', 'str-length', ['string', 'email'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Ensure options is always a hash and not a single value.
@@ -1296,7 +1298,7 @@ Foval.prototype.validations = {
   'telephone': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('validation', ['telephone'], definition.dataType);
+    var err = form.checkDataType('validation', 'telephone', ['telephone'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Ensure options is always a hash and not a single value.
@@ -1350,7 +1352,7 @@ Foval.prototype.validations = {
   'url': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('validation', ['url'], definition.dataType);
+    var err = form.checkDataType('validation', 'url', ['url'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Ensure options is always a hash and not a single value.

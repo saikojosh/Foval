@@ -343,8 +343,13 @@ Foval.prototype.validate = function (callback) {
           reason:  reason || null
         };
 
-        // Save & continue;
+        // Mark the form invalid?
         if (!isAdditionalValid) { isFormValid = false; }
+
+        // Reload the field hash incase the additional validation method tried to modify it.
+        fieldHash = form.generateFieldHash();
+
+        // Continue.
         return next(null, isFormValid, validationResults, fieldHash);
 
       });

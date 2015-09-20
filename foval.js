@@ -1,6 +1,14 @@
 /*
  * FOVAL.
  * Wonderfully easy form validation for Node.js.
+ *
+ * TO DO:
+ *  - Implement hash fields.
+ *  - Implement radio button fields.
+ *  - Implement file fields.
+ *  - Document additional validation.
+ *  - Document methods.
+ *
  */
 
 var crypto       = require('crypto');

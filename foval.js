@@ -238,22 +238,6 @@ Foval.prototype.defineField = function (input) {
 };
 
 /*
- * Add a single function to perform some extra validation on the field data, for
- * example querying the database.
- * fn(this, fieldHash, finish);
- * finish(err, isValid, reason);
- */
-Foval.prototype.additionalValidation = function (fn) {
-
-  // Store the function.
-  if (typeof fn === 'function') { this.additionalValidationFn = fn; }
-
-  // Enable changing.
-  return this;
-
-};
-
-/*
  * Perform the form validation and call the callback with the result.
  * callback(err, success, validationResults, fieldHash);
  */
@@ -325,7 +309,7 @@ Foval.prototype.validate = function (callback) {
     },
 
     // Second, perform the additional validation, if any.
-    function performAdditionalValidation (next, isFormValid, validationResults) {
+    function performAdditionalValidation (isFormValid, validationResults, next) {
 
       // Collect up the field values.
       var fieldHash            = form.generateFieldHash();
@@ -337,18 +321,25 @@ Foval.prototype.validate = function (callback) {
       }
 
       // Do the extra validation.
-      additionalValidation(this, fieldHash, function (err, isAdditionalValid, reason) {
+      additionalValidation(form, fieldHash, function (err, additionalResults) {
 
         if (err) { return next(err); }
 
-        // Include the additional result with the validation results.
-        validationResults['additionalValidation'] = {
-          isValid: isAdditionalValid,
-          reason:  reason || null
-        };
+        // Copy the additional validation results into our validation results.
+        if (typeof additionalResults === 'object') {
+          for (var key in additionalResults) {
+            if (!additionalResults.hasOwnProperty(key)) { continue; }
 
-        // Mark the form invalid?
-        if (!isAdditionalValid) { isFormValid = false; }
+            var additionalResult = additionalResults[key];
+
+            // Copy in.
+            validationResults[key]['additional-validation'] = additionalResult;
+
+            // Save the result.
+            form.definitions[key].isValid = additionalResult.passed;
+            if (!additionalResult.passed) { isFormValid = false; }
+          }
+        }
 
         // Reload the field hash incase the additional validation method tried to modify it.
         fieldHash = form.generateFieldHash();
@@ -475,6 +466,22 @@ Foval.prototype.runValidations = function (definition, callback) {
     return callback(null, isFieldValid, result);
 
   });
+
+};
+
+/*
+ * Add a single function to perform some extra validation on the field data, for
+ * example querying the database.
+ * fn(form, fieldHash, finish);
+ * finish(err, additionalResults);
+ */
+Foval.prototype.additionalValidation = function (fn) {
+
+  // Store the function.
+  if (typeof fn === 'function') { this.additionalValidationFn = fn; }
+
+  // Enable changing.
+  return this;
 
 };
 

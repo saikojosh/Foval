@@ -572,6 +572,20 @@ Foval.prototype.getFieldData = function (fieldName, propertyName) {
 };
 
 /*
+ * Allows a field value to be updated from outside the validator.
+ */
+Foval.prototype.updateFieldValue = function (fieldName, newValue) {
+
+  // Does the field exist?
+  if (typeof this.definitions[fieldName] === 'undefined') { return false; }
+
+  // Make the change.
+  this.definitions[fieldName].value = newValue;
+  return true;
+
+};
+
+/*
  * Contains various transformer functions.
  * transform(form, definition, options, callback);
  * callback(err, transformedValue);

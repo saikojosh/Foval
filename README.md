@@ -498,6 +498,79 @@ Trims whitespace from the start and end of a string.
 }
 ```
 
+## 'telephone'
+Formats a telephone number field as a friendly string.
+
+### Options
+
+| Property      | Data Type | Default | Notes                                                                                             |
+|---------------|-----------|---------|---------------------------------------------------------------------------------------------------|
+| run           | Boolean   | True    | Set false to stop the transform running.                                                          |
+| pattern       | String    | Null    | A Foval telephone pattern to use, overrides the 'format' option.                                  |
+| format        | String    | 'basic' | The name of the quick format to use.                                                              |
+| international | Bool      | Null    | Set true to use international format or false to use local, otherwise we use the existing format. |
+| countryCode   | String    | Null    | Must be provided if formatting local numbers as international, e.g. '44'.                         |
+
+### Instructions for 'pattern'
+You can specify a custom pattern (as a string) to meet your requirements, for example:
+
+- "{ZERO}{REM}"
+- "{ZERO}{4} {REM}"
+- "+{CC} ({ZERO}) {3} {3} {REM}"
+
+Patterns need to be a string, they can have any characters you wish except '{' or '}', and they must use the following flags:
+
+| Flag   | Notes                                                                                  |
+|--------|----------------------------------------------------------------------------------------|
+| {CC}   | The country code in the number, otherwise the 'countryCode' option provided.           |
+| {ZERO} | Inserts a zero if one if the next digit isn't a zero (use at the start of the number). |
+| {3}    | The number of digits to use in this position, can be any number >0.                    |
+| {REM}  | All the remaining numbers, this should be used last in the pattern.                    |
+
+
+### Values for 'format'
+A list of pre-defined patterns to quickly format your number.
+
+| Value       | International Format | Local Format  |
+|-------------|----------------------|---------------|
+| basic       | +447912345678        | 07912345678   |
+| uk-local    | +44 (0) 2035 123456  | 02035 123456  |
+| uk-business | +44 (0) 845 123 4567 | 0845 123 4567 |
+
+### Example
+```javascript
+{
+  ...
+  transforms: {
+    after: {
+      'telephone': 'uk-business'
+    }
+  }
+}, {
+  ...
+  transforms: {
+    after: {
+      'telephone': {
+        run:         true,
+        pattern:     'uk-business',
+        countryCode: '44'
+      }
+    }
+  }
+}, {
+  ...
+  transforms: {
+    after: {
+      'telephone': {
+        run:         true,
+        pattern:     '+{CC} ({ZERO}) {3} {3} {REM}',
+        countryCode: '44'
+      }
+    }
+  }
+}
+```
+
 # Validations List
 
 ## 'custom'

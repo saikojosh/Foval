@@ -723,6 +723,101 @@ Foval.prototype.transforms = {
     // Continue.
     return callback(null, value);
 
+  },
+
+  /*
+   * Formats a telephone number field as a friendly string.
+   * [options]
+   *  pattern       (string)       A Foval telephone pattern to use, overrides the 'format' option.
+   *  format        (string>basic) The name of the quick format to use.
+   *  international (bool>null)    Set true to use international format or false to use local, otherwise we use the existing format.
+   *  countryCode   (string)       Must be provided if formatting local numbers as international.
+   */
+  'telephone': function (value, dataType, options, callback) {
+
+    // Check the data type is correct.
+    var err = form.checkDataType('transform', ['string', 'email', 'telephone', 'url'], dataType);
+    if (ErrorNinja.isNinja(err)) { throw err; }
+
+    // Ensure options is always a hash and not a single value.
+    if (typeof options !== 'object' || options.constructor.name !== 'Object') {
+      options = {
+        'format': options
+      };
+    }
+
+    // Default options.
+    options = extender.defaults({
+      pattern:       null,
+      format:        'basic',
+      international: null,  //by default we keep the formatted number in the same format it was given.
+      countryCode:   null
+    }, options);
+
+    var valMatch            = value.match(/(?:(\+\d+)\.)?(\d+)/);
+    var isInternational  = Boolean(valMatch && valMatch[1]);
+    var useInternational = (options.international === null ? isInternational : options.international);
+    var countryCode      = (isInternational ? valMatch[1] : options.countryCode);
+    var phoneNumber      = valMatch[2];
+
+    // Pre-defined patterns.
+    var patterns = {
+      'basic': {
+        international: '+{CC}{ZERO}{REM}',          //+447912345678
+        local:         '{ZERO}{REM}'                //07912345678
+      },
+      'uk-local': {
+        international: '+{CC} ({ZERO}) {4} {REM}',  //+44 (0) 2035 123456
+        local:         '{ZERO}{4} {REM}'            //02035 123456
+      },
+      'uk-business': {
+        international: '+{CC} ({ZERO}) {3} {3} {REM}',  //+44 (0) 845 123 4567
+        local:         '{ZERO}{3} {3} {REM}'            //0845 123 4567
+      }
+    };
+
+    // Which pattern are we using?
+    var usePattern   = options.pattern || patterns[options.format][useInternational ? 'international' : 'local'];
+    var digits       = phoneNumber.split('');
+    var patCC        = /\{CC\}/i;
+    var patZero      = /\{ZERO\}/i;
+    var patQuantity  = /\{(\d+)}/i;
+    var patRemaining = /\{REM\}/i;
+    var nextPat;
+
+    // Convet the phone number into the chosen pattern.
+    while((nextPat = /{[a-z0-9]+}/i.exec(usePattern)) !== null) {
+
+      var qty = 0;
+
+      // Country code.
+      if (nextPat.match(patCC)) {
+        value = value.replace(patCC, countryCode);
+      }
+
+      // Zero.
+      else if (nextPat.match(patZero)) {
+        value = value.replace(patZero, '0');
+        if (digits[0] === '0') { digits.splice(0, 1); }  //remove the first zero from the digits, if there is one present.
+      }
+
+      // A quantity of digits.
+      else if (qty = nextPat.match(patQuantity)) {
+        qty = (qty ? parseInt(qty[1], 10) : 0);
+        value = value.replace(patQuantity, digits.splice(0, qty));
+      }
+
+      // All the remaining digits.
+      else if (nextPat.match(patRemaining)) {
+        qty   = digits.length;
+        value = value.replace(patRemaining, digits.splice(0, qty));
+      }
+
+    }
+
+    // Continue.
+    return callback(null, value);
+
   }
 
 };

@@ -12,7 +12,7 @@ If you want to get started quickly, copy and paste the following code into your 
 var form = new Foval({   //pass in the data as a set of key-value pairs.
   'fullName':        'Josh Cole',
   'telephoneNumber': '+44.7912345678',
-  'aboutText':       'Lorum ipsum...',
+  'aboutText':       'Lorem ipsum...',
   'hoursNeeded':     30
 });
 

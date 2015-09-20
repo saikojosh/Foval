@@ -208,6 +208,9 @@ Foval.prototype.defineField = function (input) {
 
   }
 
+  // Ensure the field is marked 'required' if we have the 'required' validation.
+  if (input.validations['required']) { input.required = true; }
+
   // Save the definition.
   this.definitions[input.fieldName] = extender.merge({
     // Overwritable properties.

@@ -46,6 +46,17 @@ var validDataTypes = {
   'checkbox':  'checkbox',
   'password':  'password'
 };
+var defaultValues = {
+  'string':    '',
+  'int':       0,
+  'float':     0,
+  'email':     '',
+  'telephone': '',
+  'url':       '',
+  'boolean':   null,
+  'checkbox':  null,
+  'password':  ''
+};
 
 /*
  * Constructor. Takes in the form data and a number of options before setting up
@@ -128,7 +139,7 @@ Foval.prototype.defineField = function (input) {
 
   // Do we need to typecast the value?
   var rawValue   = this.rawData[input.fieldName];
-  var startValue = this.rawData[input.fieldName];
+  var startValue = (typeof rawValue === 'undefined' ? defaultValues[normalisedDataType] : rawValue);
   if (input.typecasting !== false) {
     switch (normalisedDataType) {
       case 'string':

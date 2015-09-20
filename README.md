@@ -563,7 +563,7 @@ Allows you to pass in an asynchronous function to do some validation of the data
 ...
 
 ## 'password'
-Uses the Countersign module to test the strength of the password.
+Uses the [Countersign](https://www.npmjs.com/package/countersign) module to test the strength of the password.
 
 ### Options
 

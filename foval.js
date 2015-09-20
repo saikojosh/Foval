@@ -424,7 +424,9 @@ Foval.prototype.runValidations = function (definition, callback) {
   var arrKeys       = Object.keys(validations);
   var isFieldValid  = true;
   var stopOnInvalid = this.stopOnInvalid;
-  var result        = {};
+  var result = {
+    isValid: null
+  };
 
   // Cycle each validation.
   async.eachSeries(arrKeys, function (key, next) {
@@ -443,8 +445,8 @@ Foval.prototype.runValidations = function (definition, callback) {
       // Store the result of the validation.
       if (!isValid) { isFieldValid = false; }
       result[key] = {
-        isValid: isValid,
-        reason:  reason || null
+        passed: isValid,
+        reason: reason || null
       };
 
       // By default, we stop when we encounter the first invalid value.
@@ -456,6 +458,9 @@ Foval.prototype.runValidations = function (definition, callback) {
     });
 
   }, function (err) {
+
+    // Add the field valid flag to the result.
+    result.isValid = isFieldValid;
 
     // The field is invalid.
     if (err && err === 'stop') { return callback(null, false, result); }

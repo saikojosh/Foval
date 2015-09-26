@@ -24,6 +24,9 @@
       "email": "saikojosh@gmail.com"
     }
   ],
+  "scripts": {
+    "postversion": "node ./version-script.js"
+  },
   "dependencies": {
     "async": "1.4.x",
     "countersign": "0.1.x",

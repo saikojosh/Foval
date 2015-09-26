@@ -8,6 +8,8 @@
  *  - Implement file fields.
  *  - Document additional validation.
  *  - Document methods.
+ *  - Add URL transform   prependProtocol (bool>true) Prepends the protocol if one isn't present.  <-- should this be a transform??
+ *  - Add password-encrypt transform (using bcrypt).
  *
  */
 

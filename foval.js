@@ -157,11 +157,12 @@ Foval.prototype.defineField = function (input) {
       case 'string':
       case 'email':
       case 'telephone':
-                       startValue = String(startValue);       break;
-      case 'int':      startValue = parseInt(startValue, 10); break;
-      case 'float':    startValue = parseFloat(startValue);   break;
-      case 'boolean':  startValue = parseBool(startValue);    break;
-      case 'checkbox': startValue = parseBool(startValue);    break;
+      case 'url':       startValue = String(startValue);       break;
+
+      case 'int':       startValue = parseInt(startValue, 10); break;
+      case 'float':     startValue = parseFloat(startValue);   break;
+      case 'boolean':   startValue = parseBool(startValue);    break;
+      case 'checkbox':  startValue = parseBool(startValue);    break;
     }
   }
 
@@ -216,6 +217,7 @@ Foval.prototype.defineField = function (input) {
     case 'url':
       if (!input.validations['url'])            { input.validations['url']            = true; }
       if (!input.transforms.before['str-trim']) { input.transforms.before['str-trim'] = true; }
+      if (!input.transforms.after['url'])       { input.transforms.after['url']       = true; }
       break;
 
   }
@@ -913,7 +915,7 @@ Foval.prototype.transforms = {
   'url': function (form, definition, options, callback) {
 
     // Check the data type is correct.
-    var err = form.checkDataType('transform', 'telephone', ['telephone'], definition);
+    var err = form.checkDataType('transform', 'url', ['string', 'url'], definition);
     if (ErrorNinja.isNinja(err)) { throw err; }
 
     // Ensure options is always a hash and not a single value.

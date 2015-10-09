@@ -73,6 +73,7 @@ var defaultValues = {
  * the instance of Foval.
  */
 function Foval (data, options) {
+  data = data || {};
 
   options = extender.defaults({
     id:                  null,   //an ID to identify this Foval instance by.

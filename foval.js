@@ -27,6 +27,7 @@ var ErrorNinja   = require('error-ninja').define({
   'invalid-data-type':                    'The field type you entered is not valid!',
   'invalid-transform':                    'The transform you have specified is invalid.',
   'invalid-validation':                   'The validation you have specified is invalid.',
+  'invalid-formatter':                    'The formatter you specified is invalid.',
   'transform-wrong-data-type':            'The data type of the field is incorrect for this transform.',
   'validation-wrong-data-type':           'The data type of the field is incorrect for this validation.',
   'custom-transform-no-function':         'A function has not be provided to the custom transform.',
@@ -604,6 +605,23 @@ Foval.prototype.updateFieldValue = function (fieldName, newValue) {
 };
 
 /*
+ * Allows the given formatter to be run from outside of the validator.
+ */
+Foval.prototype.format = Foval.format = function (value, formatter, options) {
+
+  // Check the formatter is valid.
+  if (typeof this.formatters[formatter] !== 'function') {
+    throw new ErrorNinja('invalid-formatter', {
+      formatter: formatter
+    });
+  }
+
+  // Do the formatting.
+  return this.formatters[formatter](value, options);
+
+};
+
+/*
  * Contains various transformer functions.
  * transform(form, definition, options, callback);
  * callback(err, transformedValue);
@@ -878,6 +896,27 @@ Foval.prototype.transforms = {
         'format': options
       };
     }
+
+    // Do the formatting.
+    var value = form.formatters.telephone(definition.value, options);
+
+    // Continue.
+    return callback(null, value);
+
+  }
+
+};
+
+/*
+ * Contains various data formatters, these can be used by the transform methods
+ * or externally with the Foval.format() method. Formatters must be synchronous.
+ */
+Foval.prototype.formatters = Foval.formatters = {
+
+  /*
+   * Returns a nicely formatted telephone number.
+   */
+  'telephone': function (value, options) {
 
     // Default options.
     options = extender.defaults({

@@ -923,11 +923,10 @@ Foval.prototype.formatters = Foval.formatters = {
       pattern:       null,
       format:        'basic',
       international: null,  //by default we keep the formatted number in the same format it was given.
-      countryCode:   null
+      countryCode:   '??'   //country code without the '+'.
     }, options);
 
-    var value            = definition.value;
-    var valMatch         = value.match(/(?:(\+\d+)\.)?(\d+)/);
+    var valMatch         = value.match(/(?:\+(\d+)\.)?(\d+)/);
     var isInternational  = Boolean(valMatch && valMatch[1]);
     var useInternational = (options.international === null ? isInternational : options.international);
     var countryCode      = (isInternational ? valMatch[1] : options.countryCode);
@@ -936,16 +935,16 @@ Foval.prototype.formatters = Foval.formatters = {
     // Pre-defined patterns.
     var patterns = {
       'basic': {
-        international: '+{CC}{ZERO}{REM}',          //+447912345678
-        local:         '{ZERO}{REM}'                //07912345678
+        international: '{CC}{REM}',                    //+447912345678
+        local:         '{ZERO}{REM}'                   //07912345678
       },
       'uk-local': {
-        international: '+{CC} ({ZERO}) {4} {REM}',  //+44 (0) 2035 123456
-        local:         '{ZERO}{4} {REM}'            //02035 123456
+        international: '{CC} ({ZERO}) {4} {REM}',      //+44 (0) 2035 123456
+        local:         '{ZERO}{4} {REM}'               //02035 123456
       },
       'uk-business': {
-        international: '+{CC} ({ZERO}) {3} {3} {REM}',  //+44 (0) 845 123 4567
-        local:         '{ZERO}{3} {3} {REM}'            //0845 123 4567
+        international: '{CC} ({ZERO}) {3} {3} {REM}',  //+44 (0) 845 123 4567
+        local:         '{ZERO}{3} {3} {REM}'           //0845 123 4567
       }
     };
 
@@ -956,40 +955,41 @@ Foval.prototype.formatters = Foval.formatters = {
     var patZero      = /\{ZERO\}/i;
     var patQuantity  = /\{(\d+)}/i;
     var patRemaining = /\{REM\}/i;
+    var tokenRE      = /{[a-z0-9]+}/ig;
+    var output       = usePattern;
     var nextPat;
 
     // Convet the phone number into the chosen pattern.
-    while((nextPat = /{[a-z0-9]+}/i.exec(usePattern)) !== null) {
+    while((nextPat = tokenRE.exec(usePattern)) !== null) {
 
       var qty = 0;
 
       // Country code.
-      if (nextPat.match(patCC)) {
-        value = value.replace(patCC, countryCode);
+      if (nextPat[0].match(patCC)) {
+        output = output.replace(patCC, '+' + countryCode);
       }
 
       // Zero.
-      else if (nextPat.match(patZero)) {
-        value = value.replace(patZero, '0');
+      else if (nextPat[0].match(patZero)) {
+        output = output.replace(patZero, '0');
         if (digits[0] === '0') { digits.splice(0, 1); }  //remove the first zero from the digits, if there is one present.
       }
 
       // A quantity of digits.
-      else if (qty = nextPat.match(patQuantity)) {
-        qty = (qty ? parseInt(qty[1], 10) : 0);
-        value = value.replace(patQuantity, digits.splice(0, qty));
+      else if (qty = nextPat[0].match(patQuantity)) {
+        qty    = (qty ? parseInt(qty[1], 10) : 0);
+        output = output.replace(patQuantity, digits.splice(0, qty).join(''));
       }
 
       // All the remaining digits.
-      else if (nextPat.match(patRemaining)) {
-        qty   = digits.length;
-        value = value.replace(patRemaining, digits.splice(0, qty));
+      else if (nextPat[0].match(patRemaining)) {
+        qty    = digits.length;
+        output = output.replace(patRemaining, digits.splice(0, qty).join(''));
       }
 
     }
 
-    // Continue.
-    return callback(null, value);
+    return output;
 
   }
 

@@ -903,6 +903,32 @@ Foval.prototype.transforms = {
     // Continue.
     return callback(null, value);
 
+  },
+
+  /*
+   * Formats a URL field as a full URL.
+   * [options]
+   *  protocol (string>http) The protocol to put at the start of the string.
+   */
+  'url': function (form, definition, options, callback) {
+
+    // Check the data type is correct.
+    var err = form.checkDataType('transform', 'telephone', ['telephone'], definition);
+    if (ErrorNinja.isNinja(err)) { throw err; }
+
+    // Ensure options is always a hash and not a single value.
+    if (typeof options !== 'object' || options.constructor.name !== 'Object') {
+      options = {
+        'protocol': options
+      };
+    }
+
+    // Do the formatting.
+    var value = form.formatters.url(definition.value, options);
+
+    // Continue.
+    return callback(null, value);
+
   }
 
 };
@@ -990,6 +1016,28 @@ Foval.prototype.formatters = Foval.formatters = {
     }
 
     return output;
+
+  },
+
+  /*
+   * Returns a nicely formatted URL.
+   */
+  'url': function (value, options) {
+
+    // Default options.
+    options = extender.defaults({
+      protocol: 'http'
+    }, options);
+
+    // Add the protocol to the front if we don't already have one.
+    if (typeof value === 'string' && value.length) {
+      if (value.match(new RegExp('^https?://', 'i'))) {
+        return options.protocol + '://' + value;
+      }
+    }
+
+    // Otherwise use the original value.
+    return value;
 
   }
 

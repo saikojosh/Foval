@@ -32,11 +32,11 @@ var FovalClient = {
    */
   setupForm: function (formId, options) {
 
-    var formAction = window.location.protocol + '//' + window.location.host + $form.attr('action');
-    var formMethod = $form.attr('method').toUpperCase();
     var $form = $('#' + formId);
     if (!$form[0]) { return false; }
 
+    var formAction = window.location.protocol + '//' + window.location.host + ($form.attr('action') || '');
+    var formMethod = ($form.attr('method') || '').toUpperCase();
 
     // Default options.
     options = $.extend({

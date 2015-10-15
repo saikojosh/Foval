@@ -123,7 +123,7 @@ var FovalClient = {
     // Hash fields (MUST BE BEFORE CHECKBOXES).
     else if (isInput && form.hashFields.indexOf(name) > -1) {
       if (!output[name]) { output[name] = {}; }
-      var hashCmpVal = $field.val();
+      var hashCmpVal = $field.val() || $field.attr('id');
       output[name][hashCmpVal] = $field.prop('checked');
       return next(form, inputEls, ++i, output, finish);
     }

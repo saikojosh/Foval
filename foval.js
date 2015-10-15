@@ -1186,11 +1186,11 @@ Foval.prototype.validations = {
     var numSelections = 0;
 
     // Check all the values.
-    for (var h = 0, hlen = Object.keys(definition.value).length ; h < hlen ; h++) {
+    for (var h in definition.value) {
       if (definition.value.hasOwnProperty(h)) {
 
         // We've found an invalid key!
-        if (options.validKeys.indexOf(h) === -1) {
+        if (options.validKeys && options.validKeys.length && options.validKeys.indexOf(h) === -1) {
           isInvalidKey = true;
           break;
         }
@@ -1509,7 +1509,7 @@ Foval.prototype.validations = {
 
       case 'hash':
         if (value === Object(value)) {  //is an object.
-          for (var h = 0, hlen = Object.keys(value).length ; h < hlen ; h++) {
+          for (var h in value) {
             if (value.hasOwnProperty(h)) {
               if (value[h]) {  //stop on first truthy value because we only need 1 checkbox selected for this to be valid.
                 isPop = true;

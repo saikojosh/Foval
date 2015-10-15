@@ -157,7 +157,8 @@ Foval.prototype.defineField = function (input) {
       case 'string':
       case 'email':
       case 'telephone':
-      case 'url':       startValue = String(startValue);       break;
+      case 'url':
+      case 'password':  startValue = String(startValue);       break;
 
       case 'int':       startValue = parseInt(startValue, 10); break;
       case 'float':     startValue = parseFloat(startValue);   break;

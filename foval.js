@@ -34,6 +34,7 @@ var ErrorNinja   = require('error-ninja').define({
   'str-case-invalid-case':                'The string case you provided is invalid.',
   'str-replace-transform-invalid-regexp': 'The regular expression you provided is invalid.',
   'custom-validation-no-function':        'A function has not be provided to the custom validation.',
+  'hash-validation-invalid-hash':         'The hash data provided is not a hash.',
   'in-list-validation-invalid-list':      'The list you provided is invalid.',
   'match-field-validation-invalid-field': 'The match field you provided is invalid.',
   'regexp-validation-invalid-regexp':     'The regular expression you provided is invalid.'
@@ -229,6 +230,10 @@ Foval.prototype.defineField = function (input) {
       if (!input.validations['url'])            { input.validations['url']            = true; }
       if (!input.transforms.before['str-trim']) { input.transforms.before['str-trim'] = true; }
       if (!input.transforms.after['url'])       { input.transforms.after['url']       = true; }
+      break;
+
+    case 'hash':
+      if (!input.validations['hash'])           { input.validations['hash']           = true; }
       break;
 
   }
@@ -1131,6 +1136,77 @@ Foval.prototype.validations = {
   },
 
   /*
+   * Various tests on a hash field.
+   * [options]
+   *  run           (bool>true) Set false to prevent it from running.
+   *  validKeys     (arr)       An array of valid keys to check against.
+   *  minSelections (int>1)     The minmum number of items that need to be selected.
+   *  maxSelections (int>null)  The maximum number of items that can be selected.
+   * [reasons]
+   *  'invalid-key'         At least one of the keys given in the hash is invalid.
+   *  'too-few-selections'  Not enough selections were made.
+   *  'too-many-selections' Too many selections were made.
+   */
+  'hash': function (form, definition, options, callback) {
+
+    // Check the data type is correct.
+    var err = form.checkDataType('validation', 'hash', ['hash'], definition);
+    if (ErrorNinja.isNinja(err)) { throw err; }
+
+    // Ensure options is always a hash and not a single value.
+    options = extender.defaults({
+      validKeys:     [],
+      minSelections: 1,
+      maxSelections: null
+    }, options);
+
+    // No hash provided.
+    if (definition.value !== Object(definition.value) || !Object.keys(definition.value).length) {
+      throw new ErrorNinja('hash-validation-invalid-hash', {
+        hash: definition.value
+      });
+    }
+
+    var isInvalidKey  = false;
+    var numSelections = 0;
+
+    // Check all the values.
+    for (var h = 0, hlen = Object.keys(definition.value).length ; h < hlen ; h++) {
+      if (definition.value.hasOwnProperty(h)) {
+
+        // We've found an invalid key!
+        if (options.validKeys.indexOf(h) === -1) {
+          isInvalidKey = true;
+          break;
+        }
+
+        // Count the selections.
+        if (definition.value[h]) { numSelections++; }
+
+      }
+    }
+
+    // Check if all the hash keys are valid.
+    if (options.validKeys && options.validKeys.length && isInvalidKey) {
+      return callback(null, false, 'invalid-key');
+    }
+
+    // Not enough selections made.
+    if (options.minSelections && numSelections < options.minSelections) {
+      return callback(null, false, 'too-few-selections');
+    }
+
+    // Too many selections made.
+    if (options.maxSelections && numSelections > options.maxSelections) {
+      return callback(null, false, 'too-many-selections');
+    }
+
+    // Success!
+    return callback(null, true);
+
+  },
+
+  /*
    * The field value must be one of the ones in the given list.
    * [options]
    *  run  (bool>true) Set false to prevent it from running.
@@ -1415,6 +1491,19 @@ Foval.prototype.validations = {
       case 'int':      isPop = Boolean(!isNaN(parseInt(value, 10)) && isFinite(value)); break;
 
       case 'float':    isPop = Boolean(!isNaN(parseFloat(value)) && isFinite(value));   break;
+
+      case 'hash':
+        if (value === Object(value)) {  //is an object.
+          for (var h = 0, hlen = Object.keys(value).length ; h < hlen ; h++) {
+            if (value.hasOwnProperty(h)) {
+              if (value[h]) {  //stop on first truthy value because we only need 1 checkbox selected for this to be valid.
+                isPop = true;
+                break;
+              }
+            }
+          }
+        }
+        break;
 
       default:         isPop = Boolean(value);                                          break;
 

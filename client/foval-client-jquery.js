@@ -10,7 +10,7 @@ var FovalClient = {
    * Global properties.
    */
   prop: {
-    version:        '0.0.8',
+    version:        '0.0.9',
     forms:          {},
     defaultTimeout: 10000   //10 seconds
   },

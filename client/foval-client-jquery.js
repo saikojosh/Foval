@@ -116,7 +116,7 @@ var FovalClient = {
     var isInput = Boolean(tag === 'INPUT');
 
     // Ignore certain field types.
-    if (isInput && type === 'submit') {
+    if ((isInput && type === 'submit') || tag === 'FIELDSET') {
       return next(form, inputEls, ++i, output, finish);
     }
 

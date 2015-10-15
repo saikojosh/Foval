@@ -151,6 +151,30 @@ Foval.prototype.defineField = function (input) {
     });
   }
 
+  // Special case typecasting for hash fields.
+  if (input.dataType === 'hash') {
+
+    // Do the conversion.
+    var hashResult = {};
+    for (var fieldKey in this.rawData) {
+      if (this.rawData.hasOwnProperty(fieldKey)) {
+
+        var hashKeyMatch = fieldKey.match(new RegExp('^' + input.fieldName + '\\[(.+)\\]'));
+
+        if (hashKeyMatch) {
+          var subKey = hashKeyMatch[1];
+          var value  = parseBool(this.rawData[fieldKey]);
+          hashResult[subKey] = value;
+        }
+
+      }
+    }
+
+    // Store the result as a true hash.
+    this.rawData[input.fieldName] = hashResult;
+
+  }
+
   // Do we need to typecast the value?
   var rawValue   = this.rawData[input.fieldName];
   var startValue = (typeof rawValue === 'undefined' ? defaultValues[normalisedDataType] : rawValue);
@@ -166,15 +190,6 @@ Foval.prototype.defineField = function (input) {
       case 'float':     startValue = parseFloat(startValue);   break;
       case 'boolean':   startValue = parseBool(startValue);    break;
       case 'checkbox':  startValue = parseBool(startValue);    break;
-      case 'hash':
-        if (startValue === Object(startValue)) {  //do we have an object?
-          for (var h = 0, hlen = Object.keys(startValue).length ; h < hlen ; h++) {
-            if (startValue.hasOwnProperty(h)) {
-              startValue[h] = parseBool(startValue[h]);
-            }
-          }
-        }
-        break;
     }
   }
 

@@ -56,6 +56,7 @@ var validDataTypes = {
   'boolean':   'boolean',
   'bool':      'boolean',
   'checkbox':  'checkbox',
+  'hash':      'hash'
 };
 var defaultValues = {
   'string':    '',
@@ -164,6 +165,15 @@ Foval.prototype.defineField = function (input) {
       case 'float':     startValue = parseFloat(startValue);   break;
       case 'boolean':   startValue = parseBool(startValue);    break;
       case 'checkbox':  startValue = parseBool(startValue);    break;
+      case 'hash':
+        if (startValue === Object(startValue)) {  //do we have an object?
+          for (var h = 0, hlen = Object.keys(startValue).length ; h < hlen ; h++) {
+            if (startValue.hasOwnProperty(h)) {
+              startValue[h] = parseBool(startValue[h]);
+            }
+          }
+        }
+        break;
     }
   }
 

@@ -985,7 +985,7 @@ Foval.prototype.formatters = Foval.formatters = {
       countryCode:   '??'   //country code without the '+'.
     }, options);
 
-    var valMatch         = value.match(/(?:\+(\d+)\.)?(\d+)/);
+    var valMatch         = value.replace(/[^\d+]/gi, '').match(/(?:\+(\d+)\.)?(\d+)/);
     var isInternational  = Boolean(valMatch && valMatch[1]);
     var useInternational = (options.international === null ? isInternational : options.international);
     var countryCode      = (isInternational ? valMatch[1] : options.countryCode);

@@ -45,17 +45,17 @@ var ErrorNinja   = require('error-ninja').define({
 var validDataTypes = {
   'string':    'string',
   'str':       'string',
-  'number':    'int',
-  'int':       'int',
-  'float':     'float',
   'email':     'email',
   'telephone': 'telephone',
   'tel':       'telephone',
   'url':       'url',
+  'password':  'password',
+  'number':    'int',
+  'int':       'int',
+  'float':     'float',
   'boolean':   'boolean',
   'bool':      'boolean',
   'checkbox':  'checkbox',
-  'password':  'password'
 };
 var defaultValues = {
   'string':    '',

@@ -926,7 +926,7 @@ Foval.prototype.transforms = {
     // Ensure options is always a hash and not a single value.
     if (typeof options !== 'object' || options.constructor.name !== 'Object') {
       options = {
-        'format': options
+        'format': (typeof options === 'string' ? options : 'default')
       };
     }
 
@@ -952,7 +952,7 @@ Foval.prototype.transforms = {
     // Ensure options is always a hash and not a single value.
     if (typeof options !== 'object' || options.constructor.name !== 'Object') {
       options = {
-        'protocol': options
+        'protocol': (typeof options === 'string' ? options : 'default')
       };
     }
 
@@ -976,6 +976,8 @@ Foval.prototype.formatters = Foval.formatters = {
    * Returns a nicely formatted telephone number.
    */
   'telephone': function (value, options) {
+
+    if (options && options.format === 'default') { delete options.format; }
 
     // Default options.
     options = extender.defaults({
@@ -1056,6 +1058,8 @@ Foval.prototype.formatters = Foval.formatters = {
    * Returns a nicely formatted URL.
    */
   'url': function (value, options) {
+
+    if (options && options.protocol === 'default') { delete options.protocol; }
 
     // Default options.
     options = extender.defaults({

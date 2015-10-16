@@ -288,12 +288,7 @@ var FovalClient = {
   resetErrors: function (form) {
 
     // Unhighlight fields.
-    $(form.$form[0].elements).removeClass('error');
-
-    // Hide error messages.
-    form.$form.find('.error').each(function (index, item) {
-      $(this).removeClass('visible').text('');
-    });
+    $(form.$form[0].elements).removeClass('error').removeClass('invalid');
 
   },
 
@@ -312,22 +307,13 @@ var FovalClient = {
     for (var fieldName in errors) {
       if (!errors.hasOwnProperty(fieldName)) { continue; }
 
-      var fieldErrors = errors[fieldName];
-      var $fieldInput = $(form.$form[0].elements).filter('[name=' + fieldName + ']');
-      var $fieldError = form.$form.find('.error[data-field=' + fieldName + ']');
+      // Mark up the field if we have an error.
+      if (!errors[fieldName].isValid) {
+        var $fieldInput = $(form.$form[0].elements).filter('[name=' + fieldName + ']');
+        if (!$fieldInput[0]) { $fieldInput = $(form.$form[0].elements).filter('#' + fieldName); }
 
-      // Highlight field.
-      $fieldInput.addClass('error');
-
-      // Cycle field errors.
-      var messages = '';
-      for (var e = 0 ; e < fieldErrors.length ; e++) {
-        var error = fieldErrors[e];
-        messages += (e > 0 ? '<br>' : '') + error.message;
+        $fieldInput.addClass('error').addClass('invalid');
       }
-
-      // Set field error text.
-      $fieldError.addClass('visible').html(messages);
     }
 
   }

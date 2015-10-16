@@ -999,6 +999,10 @@ Foval.prototype.formatters = Foval.formatters = {
         international: '{CC}{REM}',                    //+447912345678
         local:         '{ZERO}{REM}'                   //07912345678
       },
+      'database': {
+        international: '{CC}.{REM}',                    //+44.7912345678
+        local:         '{ZERO}{REM}'                   //07912345678
+      },
       'uk-local': {
         international: '{CC} ({ZERO}) {4} {REM}',      //+44 (0) 2035 123456
         local:         '{ZERO}{4} {REM}'               //02035 123456
@@ -1019,6 +1023,9 @@ Foval.prototype.formatters = Foval.formatters = {
     var tokenRE      = /{[a-z0-9]+}/ig;
     var output       = usePattern;
     var nextPat;
+
+    // We are formatting as an international number so we don't need the zero at the start.
+    if (useInternational && digits[0] === '0') { digits.shift(); }
 
     // Convet the phone number into the chosen pattern.
     while((nextPat = tokenRE.exec(usePattern)) !== null) {

@@ -1020,6 +1020,9 @@ Foval.prototype.formatters = Foval.formatters = {
     var output       = usePattern;
     var nextPat;
 
+    // We are formatting as an international number so we don't need the zero at the start.
+    if (useInternational && digits[0] === '0') { digits.shift(); }
+
     // Convet the phone number into the chosen pattern.
     while((nextPat = tokenRE.exec(usePattern)) !== null) {
 

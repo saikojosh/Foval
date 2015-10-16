@@ -1068,7 +1068,7 @@ Foval.prototype.formatters = Foval.formatters = {
 
     // Add the protocol to the front if we don't already have one.
     if (typeof value === 'string' && value.length) {
-      if (value.match(new RegExp('^https?://', 'i'))) {
+      if (!value.match(new RegExp('^https?://', 'i'))) {
         return options.protocol + '://' + value;
       }
     }

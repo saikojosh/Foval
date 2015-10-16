@@ -999,6 +999,10 @@ Foval.prototype.formatters = Foval.formatters = {
         international: '{CC}{REM}',                    //+447912345678
         local:         '{ZERO}{REM}'                   //07912345678
       },
+      'database': {
+        international: '{CC}.{REM}',                    //+44.7912345678
+        local:         '{ZERO}{REM}'                   //07912345678
+      },
       'uk-local': {
         international: '{CC} ({ZERO}) {4} {REM}',      //+44 (0) 2035 123456
         local:         '{ZERO}{4} {REM}'               //02035 123456

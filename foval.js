@@ -663,7 +663,7 @@ Foval.prototype.transforms = {
 
   /*
    * Perform a custom transform using the function passed in.
-   * custom(value, finish);
+   * custom(value, dataType, finish);
    * finish(err, transformedValue);
    * [options]
    *  run (bool>true) Set false to prevent it from running.

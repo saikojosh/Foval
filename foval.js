@@ -989,7 +989,7 @@ Foval.prototype.formatters = Foval.formatters = {
     var isInternational  = Boolean(valMatch && valMatch[1]);
     var useInternational = (options.international === null ? isInternational : options.international);
     var countryCode      = (isInternational ? valMatch[1] : options.countryCode);
-    var phoneNumber      = valMatch[2];
+    var phoneNumber      = (valMatch ? valMatch[2] || '' : '');
 
     // Pre-defined patterns.
     var patterns = {

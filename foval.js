@@ -381,8 +381,11 @@ Foval.prototype.validate = function (callback) {
             validationResults[key]['additional-validation'] = additionalResult;
 
             // Save the result.
-            form.definitions[key].isValid = additionalResult.passed;
-            if (!additionalResult.passed) { isFormValid = false; }
+            if (!additionalResult.passed) {
+              form.definitions[key].isValid  = false;
+              validationResults[key].isValid = false;
+              isFormValid                    = false;
+            }
           }
         }
 

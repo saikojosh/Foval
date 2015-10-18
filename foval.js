@@ -94,6 +94,7 @@ function Foval (data, options) {
 
   // Placeholder values.
   this.version                = packageJSON.version;
+  this.minFovalClientVersion  = packageJSON.minFovalClientVersion;
   this.rawData                = data;
   this.definitions            = {};
   this.additionalValidationFn = null;

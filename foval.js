@@ -1413,7 +1413,7 @@ Foval.prototype.validations = {
         length:      6,
         lowercase:   true,
         uppercase:   true,
-        digits:      false,
+        digits:      true,
         whitespace:  false,
         punctuation: false,
         common:      true

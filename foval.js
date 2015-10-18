@@ -1399,7 +1399,7 @@ Foval.prototype.validations = {
    *  requirements (hash)      A list of options to pass to the Countersign module.
    *  minScore     (int)       The minimum score required to pass.
    * [reasons]
-   *  'invalid' The regular expression did not match.
+   *  'too-weak' The password given wasn't strong enough to satisfy the Countersign tests.
    */
   'password': function (form, definition, options, callback) {
 
@@ -1432,11 +1432,11 @@ Foval.prototype.validations = {
 
       if (err) { throw err; }
 
-      // Success!
-      return callback(null, false, result);
+      // Too weak!
+      if (!success) { return callback(null, false, 'too-weak'); }
 
       // Success!
-      return callback(null, true, result);
+      return callback(null, true);
 
     });
 

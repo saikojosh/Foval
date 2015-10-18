@@ -17,6 +17,7 @@ var crypto       = require('crypto');
 var async        = require('async');
 var Countersign  = require('countersign');
 var escapeRegExp = require('escape-regexp');
+var logger       = require('log-ninja').init(1);
 var extender     = require('object-extender');
 var parseBool    = require('parse-bool');
 var semver       = require('semver');

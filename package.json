@@ -32,6 +32,7 @@
     "countersign": "0.1.x",
     "error-ninja": "0.0.x",
     "escape-regexp": "0.0.x",
+    "log-ninja": "1.1.x",
     "object-extender": "1.2.x",
     "parse-bool": "0.0.x",
     "semver": "5.0.x"

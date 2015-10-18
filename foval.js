@@ -251,6 +251,10 @@ Foval.prototype.defineField = function (input) {
       if (!input.validations['hash'])           { input.validations['hash']           = true; }
       break;
 
+    case 'password':
+      if (!input.validations['password'])       { input.validations['password']       = true; }
+      break;
+
   }
 
   // Ensure the field is marked 'required' if we have the 'required' validation.

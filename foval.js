@@ -102,10 +102,19 @@ function Foval (data, options) {
 
   // Check the Foval Client version.
   if (data.__FovalClientVersion && !semver.eq(data.__FovalClientVersion, this.version)) {
-    throw new ErrorNinja('old-foval-client-version', {
-      clientVersion: data.__FovalClientVersion,
-      moduleVersion: this.version
-    });
+
+    logger.warn('FOVAL WARNING! The client version used to submit this form is out of date.');
+    logger.warn('Foval Client v' + data.__FovalClientVersion);
+    logger.warn('Foval Module v' + this.version);
+
+    // We only throw an error if the client version is REALLY out of date.
+    if (semver.lt(data.__FovalClientVersion, this.minFovalClientVersion)) {
+      throw new ErrorNinja('old-foval-client-version', {
+        clientVersion:    data.__FovalClientVersion,
+        minClientVersion: this.minFovalClientVersion,
+        moduleVersion:    this.version
+      });
+    }
   }
 
 };

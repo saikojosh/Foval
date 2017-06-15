@@ -8,7 +8,7 @@
   },
   "name": "foval",
   "version": "0.0.19",
-  "minFovalClientVersion": "0.0.18",
+  "minFovalClientVersion": "0.0.20",
   "description": "Wonderfully easy form validation for Node.js.",
   "keywords": [
     "form",

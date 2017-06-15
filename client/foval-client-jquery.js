@@ -189,7 +189,14 @@ var FovalClient = {
     }
 
     // Most other field types
-    output[name] = $field.val();
+    if (name.match(/\[\]$/)) {
+      if (!output[name]) { output[name] = []; }
+      output[name].push($field.val());
+    }
+    else {
+      output[name] = $field.val();
+    }
+
     return next(form, inputEls, ++i, output, finish);
 
   },

@@ -114,6 +114,13 @@ var FovalClient = {
     var tag     = $field.prop('tagName');
     var type    = ($field.attr('type') ? $field.attr('type') : null);
     var isInput = Boolean(tag === 'INPUT');
+    var isDisabled = $field.prop('disabled') || false;
+
+    // If a field doesn't have a name.
+    if (!name) { return next(form, inputEls, ++i, output, finish); }
+
+    // If a field is disabled.
+    if (isDisabled) { return next(form, inputEls, ++i, output, finish); }
 
     // Ignore certain field types.
     if ((isInput && type === 'submit') || tag === 'FIELDSET') {
